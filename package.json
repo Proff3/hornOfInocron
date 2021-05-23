@@ -1,0 +1,26 @@
+{
+  "name": "tinkoff_competition",
+  "version": "1.0.0",
+  "description": "Конкурс Тенек елегра бот",
+  "main": "./bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon './bot.js'"
+  },
+  "keywords": [
+    "telegram",
+    "bot"
+  ],
+  "author": "Vladislav Pronin",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^9.0.2",
+    "nodemon": "^2.0.7",
+    "telegraf": "^4.3.0",
+    "typescript": "^4.2.4"
+  },
+  "devDependencies": {
+    "@types/node": "^15.3.0"
+  },
+  "type": "module"
+}
