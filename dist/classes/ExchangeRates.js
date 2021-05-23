@@ -10,4 +10,4 @@ class ExchangeRates {
         this.date = date;
     }
 }
-exports.default = ExchangeRates;
+export default ExchangeRates;

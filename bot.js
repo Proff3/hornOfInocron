@@ -1,4 +1,5 @@
 import { Telegraf, Markup, session } from "telegraf";
+import User from "./dist/classes/User.js";
 import dotenv from "dotenv";
 dotenv.config();
 import GetInfoStage from "./dist/scenes/GetInfoStage.js";
@@ -11,7 +12,10 @@ bot.start((ctx) => {
 ежедневно в заданное время! Предоставляемая информация: погода, курсы валют, \
 фильм дня и цитата дня.\n Для начала работы бота треубуется его настройка!";
     ctx.reply(helloMes);
-    ctx.scene.enter("UserameScene");
+    // console.log(cts.scene);
+    ctx.scene.enter("UsernameScene");
+    let user = new User();
+    user.getExchangeRates();
     // ctx.reply(
     //     "Нужно ли вам знать погоду?",
     //     Markup.keyboard([
@@ -23,9 +27,9 @@ bot.start((ctx) => {
     //console.log(ctx.from);
 });
 
-bot.hears("Ответь", (ctx) => {
-    let mes = ctx.message.text;
-    console.log(mes);
-    ctx.reply(mes);
+bot.on("text", (ctx) => {
+    console.log(ctx.session);
+    ctx.session = {};
+    console.log(ctx.session);
 });
 bot.launch();

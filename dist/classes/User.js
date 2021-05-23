@@ -1,15 +1,34 @@
 "use strict";
-import ExchangeRates from "ExchangeRates";
+import ExchangeRates from "./ExchangeRates.js";
+import fetch from "cross-fetch";
 class User {
     constructor(id, username, timePush) {
-        this.id = id
+        this.id = id;
         this.exchangeRates = new ExchangeRates();
         this.movie = { isRequired: false };
         this.quote = { isRequired: false };
-        this.weather = { isRequired: false };
+        this.weather = {
+            isRequired: false,
+            latitude: 54.608725,
+            longitude: 39.82602,
+            APIkey: "1c6390439863903a0e9416f18c574ce2",
+        };
         this.timePush = new Date();
         this.username = username;
         this.timePush = timePush;
     }
+    async getWheather() {
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.weather.latitude}&lon=${this.weather.longitude}&appid=${this.weather.APIkey}`;
+        const res = await fetch(url);
+        console.log(res);
+    }
+    async getExchangeRates() {
+        let url = "https://www.cbr-xml-daily.ru/daily_json.js";
+        const res = await fetch(url);
+        let data = await res.json();
+        console.log(data.Valute.USD);
+        console.log(data.Valute.EUR);
+        console.log(data.Valute.CNY);
+    }
 }
-exports.default = User;
+export default User;
