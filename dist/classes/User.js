@@ -18,9 +18,10 @@ class User {
         this.timePush = timePush;
     }
     async getWheather() {
-        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.weather.latitude}&lon=${this.weather.longitude}&appid=${this.weather.APIkey}`;
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.weather.latitude}&lon=${this.weather.longitude}&appid=${this.weather.APIkey}&units=metric`;
         const res = await fetch(url);
-        console.log(res);
+        let data = await res.json();
+        console.log(data);
     }
     async getExchangeRates() {
         let url = "https://www.cbr-xml-daily.ru/daily_json.js";

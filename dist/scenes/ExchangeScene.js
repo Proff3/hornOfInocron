@@ -12,17 +12,17 @@ ExchangeScene.action("NextStep", (ctx) => {
 });
 ExchangeScene.action("USD", (ctx) => {
     let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.Dollar = "Доллар";
+    chosenExchanges.USD = "Доллар";
     createReplyExchange(ctx, chosenExchanges);
 });
 ExchangeScene.action("EUR", (ctx) => {
     let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.Euro = "Евро";
+    chosenExchanges.EUR = "Евро";
     createReplyExchange(ctx, chosenExchanges);
 });
 ExchangeScene.action("CNY", (ctx) => {
     let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.Yuan = "Юань";
+    chosenExchanges.CNY = "Юань";
     createReplyExchange(ctx, chosenExchanges);
 });
 
@@ -53,6 +53,8 @@ function createMesChosenExchanges(chosenExchanges) {
 }
 
 async function createReplyExchange(ctx, chosenExchanges) {
+    console.log(chosenExchanges);
+    console.log(exchanges);
     if (JSON.stringify(chosenExchanges) === JSON.stringify(exchanges))
         return ctx.scene.enter("PhraseScene", ctx.scene.state);
     let keyboard = createExchangKeyboard(chosenExchanges);
