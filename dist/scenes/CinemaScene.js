@@ -21,4 +21,8 @@ CinemaScene.hears("Нет", (ctx) => {
     return ctx.scene.enter("TimeScene", ctx.scene.state);
 });
 
+CinemaScene.on("text", (ctx) => {
+    return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
+});
+
 export default CinemaScene;

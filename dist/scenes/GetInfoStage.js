@@ -6,6 +6,7 @@ import ExchangeScene from "./ExchangeScene.js";
 import PhraseScene from "./PhraseScene.js";
 import CinemaScene from "./CinemaScene.js";
 import TimeScene from "./TimeScene.js";
+import ConfirmScene from "./ConfirmScene.js";
 
 export default new Scenes.Stage([
     UsernameScene,
@@ -14,4 +15,5 @@ export default new Scenes.Stage([
     PhraseScene,
     CinemaScene,
     TimeScene,
+    ConfirmScene,
 ]);

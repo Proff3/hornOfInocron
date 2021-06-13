@@ -21,4 +21,8 @@ PhraseScene.hears("Нет", (ctx) => {
     return ctx.scene.enter("CinemaScene", ctx.scene.state);
 });
 
+PhraseScene.on("text", (ctx) => {
+    return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
+});
+
 export default PhraseScene;

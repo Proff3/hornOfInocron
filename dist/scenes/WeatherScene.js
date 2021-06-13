@@ -21,7 +21,12 @@ WeatherScene.on("location", (ctx) => {
 });
 
 WeatherScene.hears("Перейти к следующему шагу", (ctx) => {
+    ctx.scene.state.location = null;
     return ctx.scene.enter("ExchangeScene", ctx.scene.state);
+});
+
+WeatherScene.on("text", (ctx) => {
+    return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
 });
 
 export default WeatherScene;

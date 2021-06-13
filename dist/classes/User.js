@@ -2,15 +2,15 @@
 import ExchangeRates from "./ExchangeRates.js";
 import fetch from "cross-fetch";
 class User {
-    constructor(id, username, timePush) {
+    constructor(id, username, timePush, weatherSettings) {
         this.id = id;
         this.exchangeRates = new ExchangeRates();
         this.movie = { isRequired: false };
         this.quote = { isRequired: false };
         this.weather = {
             isRequired: false,
-            latitude: 54.608725,
-            longitude: 39.82602,
+            latitude: weatherSettings.latitude,
+            longitude: weatherSettings.longitude,
             APIkey: "1c6390439863903a0e9416f18c574ce2",
         };
         this.timePush = new Date();
@@ -30,6 +30,11 @@ class User {
         console.log(data.Valute.USD);
         console.log(data.Valute.EUR);
         console.log(data.Valute.CNY);
+    }
+    async pushConfig() {}
+    setWeather({ latitude, longitude }) {
+        this.weather.latitude = latitude;
+        this.weather.longitude = longitude;
     }
 }
 export default User;

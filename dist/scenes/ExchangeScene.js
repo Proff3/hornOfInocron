@@ -2,46 +2,42 @@ import { Markup, Scenes } from "telegraf";
 
 const ExchangeScene = new Scenes.BaseScene("ExchangeScene");
 
+const exchanges = {
+    USD: "Доллар",
+    EUR: "Евро",
+    CNY: "Юань",
+};
+
 ExchangeScene.enter((ctx) => {
     let chosenExchanges = (ctx.scene.state.exchanges = {});
     createReplyExchange(ctx, chosenExchanges);
 });
 
-ExchangeScene.action("NextStep", (ctx) => {
+ExchangeScene.hears("Перейти к следующему шагу", (ctx) => {
     return ctx.scene.enter("PhraseScene", ctx.scene.state);
 });
-ExchangeScene.action("USD", (ctx) => {
-    let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.USD = "Доллар";
-    createReplyExchange(ctx, chosenExchanges);
-});
-ExchangeScene.action("EUR", (ctx) => {
-    let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.EUR = "Евро";
-    createReplyExchange(ctx, chosenExchanges);
-});
-ExchangeScene.action("CNY", (ctx) => {
-    let chosenExchanges = ctx.scene.state.exchanges;
-    chosenExchanges.CNY = "Юань";
-    createReplyExchange(ctx, chosenExchanges);
-});
 
-var exchanges = {
-    USD: "Доллар",
-    EUR: "Евро",
-    CNY: "Юань",
-};
+ExchangeScene.on("text", (ctx) => {
+    let message = ctx.message.text;
+    if (!Object.values(exchanges).includes(message)) {
+        return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
+    }
+    let chosenKeyExchange = Object.keys(exchanges).find(
+        (key) => exchanges[key] === message
+    );
+    let chosenExchanges = ctx.scene.state.exchanges;
+    chosenExchanges[chosenKeyExchange] = message;
+    createReplyExchange(ctx, chosenExchanges);
+});
 
 function createExchangKeyboard(chosenExchanges) {
     let markupButtons = Object.entries(exchanges).filter(([key, value]) => {
         return !chosenExchanges.hasOwnProperty(key);
     });
     let keyboard = markupButtons.map(([key, value]) =>
-        Markup.button.callback(value, key)
+        Markup.button.text(value)
     );
-    let nextStepKeyboard = [
-        Markup.button.callback("Перейти к следующему шагу", "NextStep"),
-    ];
+    let nextStepKeyboard = [Markup.button.text("Перейти к следующему шагу")];
     return [keyboard, nextStepKeyboard];
 }
 
@@ -55,14 +51,14 @@ function createMesChosenExchanges(chosenExchanges) {
 async function createReplyExchange(ctx, chosenExchanges) {
     console.log(chosenExchanges);
     console.log(exchanges);
-    if (JSON.stringify(chosenExchanges) === JSON.stringify(exchanges))
+    if (Object.keys(chosenExchanges).length === Object.keys(exchanges).length)
         return ctx.scene.enter("PhraseScene", ctx.scene.state);
     let keyboard = createExchangKeyboard(chosenExchanges);
     let mesChosenExchanges = createMesChosenExchanges(chosenExchanges);
     if (mesChosenExchanges != "") await ctx.reply(mesChosenExchanges);
     await ctx.reply(
         "Выберите валюты, курс которых вы хотите знать:",
-        Markup.inlineKeyboard(keyboard).resize().oneTime()
+        Markup.keyboard(keyboard).resize().oneTime()
     );
 }
 
