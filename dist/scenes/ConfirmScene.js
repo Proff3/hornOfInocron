@@ -1,26 +1,14 @@
 import { Markup, Scenes } from "telegraf";
 import db from "../db/dbAPI.js";
+import User from "./../classes/User.js";
+import usersSchedule from "../schedule/usersSchedules.js";
 
 const ConfirmScene = new Scenes.BaseScene("ConfirmScene");
 
-function createMesChosenExchanges(chosenExchanges) {
-    let mes = Object.values(chosenExchanges).reduce((acc, value) => {
-        return acc + value + ", ";
-    }, "");
-    return mes == "" ? "не отслеживается" : mes.trim().slice(0, -1);
-}
-
 ConfirmScene.enter((ctx) => {
     let config = ctx.scene.state;
-    let trackingExchangeMes = createMesChosenExchanges(config.exchanges);
     ctx.reply(
-        `Текущая конфигурация:\n
-    обращение - ${config.userName}\n
-    погода - ${config.location != null ? "отслеживается" : "не отслеживается"}\n
-    валюты - ${trackingExchangeMes}\n
-    фраза дня - ${config.phrase ? "отслеживается" : "не отслеживается"}\n
-    фильм дня - ${config.cinema ? "отслеживается" : "не отслеживается"}\n
-    время оповещения - ${config.time}`,
+        User.getConfig(config),
         Markup.inlineKeyboard([
             [Markup.button.callback("Сохранить настройки!", "saveConfig")],
             [
@@ -37,15 +25,37 @@ ConfirmScene.enter((ctx) => {
 
 ConfirmScene.action("saveConfig", async (ctx) => {
     try {
+        ctx.reply(
+            "После сохранения настроек профиля, появится соответствующее уведомление!"
+        );
         let users = await db.getCollection("Users");
+        let data = ctx.scene.state;
+        let userExist = !!users.find((user) => user.id == data.id);
+        if (userExist) {
+            console.log("userExist");
+            db.updateOne("Users", "userId", data.id, data);
+        } else {
+            await db.insert("Users", data);
+        }
+        usersSchedule.setSchedule(data, ctx);
+        ctx.scene.leave();
+        return ctx.answerCbQuery("Конфигурация успешно сохранена!");
     } catch (err) {
         console.log(err);
+        return ctx.answerCbQuery(
+            "Ваша конфигруация, к сожалению, не сохранена, неполадки с сервером, попробуйте позже!"
+        );
     }
 });
 
-ConfirmScene.on("text", async (ctx) => {
-    console.log(ctx.scene.state);
+ConfirmScene.action("changeConfig", (ctx) => {
     ctx.scene.leave();
+    ctx.answerCbQuery("Пройдите настройку снова!");
+    return ctx.scene.enter("UsernameScene");
+});
+
+ConfirmScene.on("text", (ctx) => {
+    return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
 });
 
 export default ConfirmScene;

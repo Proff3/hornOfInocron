@@ -49,8 +49,6 @@ function createMesChosenExchanges(chosenExchanges) {
 }
 
 async function createReplyExchange(ctx, chosenExchanges) {
-    console.log(chosenExchanges);
-    console.log(exchanges);
     if (Object.keys(chosenExchanges).length === Object.keys(exchanges).length)
         return ctx.scene.enter("PhraseScene", ctx.scene.state);
     let keyboard = createExchangKeyboard(chosenExchanges);

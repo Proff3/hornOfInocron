@@ -40,9 +40,11 @@ class DataBaseAPI {
         }
     }
 
-    async updateOne(collection, key, data) {
+    async updateOne(collection, key, keyValue, data) {
         const requiredCollection = this.db.collection(collection);
-        await requiredCollection.updateOne(key, {
+        let filter = {};
+        filter[key] = keyValue;
+        await requiredCollection.updateOne(filter, {
             $set: data,
         });
     }

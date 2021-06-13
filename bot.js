@@ -19,18 +19,30 @@ bot.start(async (ctx) => {
     //let user = new User();
     //await user.getExchangeRates();
     //await user.getWheather();
-    let collection = await db.getCollection("Users");
-    console.log(collection);
 });
 
 bot.command("changeConfig", (ctx) => {
     // console.log(ctx);
     // console.log(ctx.update);
-    console.log(ctx.message.from.id);
     ctx.scene.enter("UsernameScene");
 });
 
-bot.command("getConfig", async (ctx) => {});
+bot.command("getConfig", async (ctx) => {
+    ctx.reply("Пожалуйста, подождите, настройки вашего профиля загружаются!");
+    let userId = ctx.message.from.id;
+    try {
+        let users = await db.getCollection("Users");
+        let userConfig = users.find((user) => user.userId == userId);
+        if (userConfig) {
+            ctx.reply(User.getConfig(userConfig));
+        } else {
+            ctx.reply("Настройки вашего профиля не найдены!");
+        }
+    } catch {
+        console.log(err);
+        return ctx.reply("Неполадки с сервером, попробуйте позже!");
+    }
+});
 
 bot.on("text", (ctx) => {
     ctx.reply(`Команды бота:\n
