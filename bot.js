@@ -77,6 +77,10 @@ bot.launch();
 
 app.listen(process.env.PORT || 5000);
 
+app.get("/", (req, res) => {
+    res.send("Thanks for keeping me alive)");
+});
+
 var messageCommands = `Команды бота:\n
     /changeConfig - изменение настроек вашего профиля\n
     /getConfig - просмотр настройки вашего профиля\n
