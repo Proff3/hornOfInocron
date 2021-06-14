@@ -43,6 +43,15 @@ bot.command("pushNotification", async (ctx) => {
     }
 });
 
+bot.command("checkNotification", async (ctx) => {
+    let id = ctx.message.from.id;
+    if (usersSchedule.checkNotification(id)) {
+        ctx.reply("Ваши уведомления активны!");
+    } else {
+        ctx.reply("Ваши уведомления не активны!");
+    }
+});
+
 bot.command("getConfig", async (ctx) => {
     ctx.reply("Пожалуйста, подождите, настройки вашего профиля загружаются!");
     let id = ctx.message.from.id;
@@ -72,4 +81,5 @@ var messageCommands = `Команды бота:\n
     /changeConfig - изменение настроек вашего профиля\n
     /getConfig - просмотр настройки вашего профиля\n
     /deleteNotification - удаление уведомлений\n
-    /pushNotification - рассылка уведомлений`;
+    /pushNotification - рассылка уведомлений\n
+    /checkNotification - проверить рассылку уведомлений`;
