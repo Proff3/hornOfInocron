@@ -6,7 +6,8 @@ class UsersSchedules {
 
     setSchedule(config, ctx) {
         let user = new User(config);
-        let hour = config.hour;
+        if (this.schedules.has(user.id)) this.deleteNotification(user.id);
+        let hour = user.hour;
         let rule = new schedule.RecurrenceRule();
         rule.hour = hour;
         rule.tz = "Etc/GMT-3";
@@ -22,6 +23,12 @@ class UsersSchedules {
     async #setMessage(ctx, user) {
         let message = await user.getMessage();
         ctx.reply(message);
+    }
+
+    async deleteNotification(id) {
+        let notification = this.schedules.get(id);
+        notification.userSchedule.cancel();
+        this.schedules.delete(id);
     }
 }
 
