@@ -10,6 +10,7 @@ class UsersSchedules {
         let hour = user.hour;
         let rule = new schedule.RecurrenceRule();
         rule.hour = hour;
+        rule.minute = 0;
         rule.tz = "Etc/GMT-3";
         let value = {
             user,
