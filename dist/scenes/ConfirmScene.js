@@ -28,15 +28,16 @@ ConfirmScene.action("saveConfig", async (ctx) => {
         ctx.reply(
             "После сохранения настроек профиля, появится соответствующее уведомление!"
         );
-        let users = await db.getCollection("Users");
+        //let users = await db.getCollection("Users");
         let data = ctx.scene.state;
-        let userExist = !!users.find((user) => user.id == data.id);
-        if (userExist) {
-            console.log("userExist");
-            db.updateOne("Users", "userId", data.id, data);
-        } else {
-            await db.insert("Users", data);
-        }
+        db.createOrUpdate("Users", "id", data.id, data);
+        // let userExist = !!users.find((user) => user.id == data.id);
+        // if (userExist) {
+        //     console.log("userExist");
+        //     db.updateOne("Users", "id", data.id, data);
+        // } else {
+        //     await db.insert("Users", data);
+        // }
         usersSchedule.setSchedule(data, ctx);
         ctx.scene.leave();
         return ctx.answerCbQuery("Конфигурация успешно сохранена!");

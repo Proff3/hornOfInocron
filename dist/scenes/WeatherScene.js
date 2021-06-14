@@ -16,7 +16,6 @@ WeatherScene.enter((ctx) => {
 
 WeatherScene.on("location", (ctx) => {
     ctx.scene.state.location = ctx.message.location;
-    console.log(ctx.message.location);
     return ctx.scene.enter("ExchangeScene", ctx.scene.state);
 });
 

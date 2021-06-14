@@ -1,24 +1,27 @@
 import schedule from "node-schedule";
+import User from "../classes/User.js";
 
 class UsersSchedules {
-    schedules = {};
+    schedules = new Map();
 
     setSchedule(config, ctx) {
-        let hour = config.time.substring(0, 2);
+        let user = new User(config);
+        let hour = config.hour;
         let rule = new schedule.RecurrenceRule();
-        rule.hour = 21;
-        rule.minute = 10;
+        rule.hour = hour;
         rule.tz = "Etc/GMT-3";
-        this.schedules[`${config.id}`] = {
-            config,
-            userSchedule: schedule.scheduleJob(rule, () => {
-                ctx.reply("Hello Mes");
+        let value = {
+            user,
+            userSchedule: schedule.scheduleJob(rule, async () => {
+                await this.#setMessage(ctx, user);
             }),
         };
+        this.schedules.set(config.id, value);
     }
 
-    setMessage() {
-        ctx.reply("Hello Mes");
+    async #setMessage(ctx, user) {
+        let message = await user.getMessage();
+        ctx.reply(message);
     }
 }
 

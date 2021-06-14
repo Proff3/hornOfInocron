@@ -21,7 +21,11 @@ TimeScene.on("text", (ctx) => {
     if (!timeSchedule.flat().includes(mes)) {
         return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
     }
-    ctx.scene.state.time = ctx.message.text;
+    let message = ctx.message.text;
+    let hour = message.split(":")[0];
+    hour = hour[0] == "0" ? hour[1] : hour;
+    ctx.scene.state.hour = hour;
+    ctx.scene.state.time = message;
     return ctx.scene.enter("ConfirmScene", ctx.scene.state);
 });
 

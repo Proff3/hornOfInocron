@@ -48,6 +48,15 @@ class DataBaseAPI {
             $set: data,
         });
     }
+
+    async createOrUpdate(collection, key, keyValue, data) {
+        let requiredCollection = await this.getCollection(collection);
+        if (requiredCollection.find((item) => item[key] == keyValue)) {
+            await this.updateOne(collection, key, keyValue, data);
+        } else {
+            await this.insert(collection, data);
+        }
+    }
 }
 
 export default new DataBaseAPI();
