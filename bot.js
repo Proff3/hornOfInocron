@@ -29,6 +29,7 @@ bot.command("changeConfig", (ctx) => {
 bot.command("deleteNotification", (ctx) => {
     let id = ctx.message.from.id;
     usersSchedule.deleteNotification(id);
+    ctx.reply("Уведомления удалены!");
 });
 
 bot.command("pushNotification", async (ctx) => {
