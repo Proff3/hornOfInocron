@@ -3,6 +3,8 @@ import User from "./dist/classes/User.js";
 import dotenv from "dotenv";
 import GetInfoStage from "./dist/scenes/GetInfoStage.js";
 import usersSchedule from "./dist/schedule/usersSchedules.js";
+import express from "express";
+const app = express();
 
 import db from "./dist/db/dbAPI.js";
 await db.connect("BotTELEGRAM");
@@ -29,6 +31,18 @@ bot.command("deleteNotification", (ctx) => {
     usersSchedule.deleteNotification(id);
 });
 
+bot.command("pushNotification", async (ctx) => {
+    let id = ctx.message.from.id;
+    let users = await db.getCollection("Users");
+    let userConfig = users.find((user) => user.id == id);
+    if (userConfig) {
+        usersSchedule.setSchedule(userConfig, ctx);
+        ctx.reply("Уведомления успешно добавлены!");
+    } else {
+        ctx.reply("Настройки вашего профиля не найдены!");
+    }
+});
+
 bot.command("getConfig", async (ctx) => {
     ctx.reply("Пожалуйста, подождите, настройки вашего профиля загружаются!");
     let id = ctx.message.from.id;
@@ -49,9 +63,13 @@ bot.command("getConfig", async (ctx) => {
 bot.on("text", (ctx) => {
     ctx.reply(messageCommands);
 });
+
 bot.launch();
+
+app.listen(process.env.PORT || 5000);
 
 var messageCommands = `Команды бота:\n
     /changeConfig - изменение настроек вашего профиля\n
     /getConfig - просмотр настройки вашего профиля\n
-    /deleteNotification - удаление уведомлений`;
+    /deleteNotification - удаление уведомлений\n
+    /pushNotification - рассылка уведомлений`;
