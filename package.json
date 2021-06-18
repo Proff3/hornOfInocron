@@ -2,10 +2,13 @@
   "name": "tinkoff_competition",
   "version": "1.0.0",
   "description": "Конкурс Тенек телеграм бот",
-  "main": "./bot.js",
+  "main": "./dist/bot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node bot.js"
+    "start": "node ./dist/bot.js",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "build": "tsc",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "telegram",
@@ -19,13 +22,30 @@
     "express": "^4.17.1",
     "mongodb": "^3.6.8",
     "mongoose": "^5.12.10",
+    "node-fetch": "^2.6.1",
     "node-schedule": "^2.0.0",
     "nodemon": "^2.0.7",
     "telegraf": "^4.3.0",
-    "typescript": "^4.2.4"
+    "telegraf-i18n": "^6.6.0"
   },
   "devDependencies": {
-    "@types/node": "^15.3.0"
+    "@types/express": "^4.17.12",
+    "@types/node": "^15.3.0",
+    "@types/node-fetch": "^2.5.10",
+    "@types/node-schedule": "^1.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
+    "eslint": "^7.28.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-json": "^3.0.0",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0",
+    "prettier": "^2.3.1",
+    "typescript": "^4.3.3"
   },
   "type": "module"
 }

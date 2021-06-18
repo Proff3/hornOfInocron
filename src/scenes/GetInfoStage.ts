@@ -1,5 +1,5 @@
 "use strict";
-import { Scenes } from "telegraf";
+import { Context, Scenes } from "telegraf";
 import UsernameScene from "./UsernameScene.js";
 import WeatherScene from "./WeatherScene.js";
 import ExchangeScene from "./ExchangeScene.js";
@@ -7,7 +7,9 @@ import PhraseScene from "./PhraseScene.js";
 import CinemaScene from "./CinemaScene.js";
 import TimeScene from "./TimeScene.js";
 import ConfirmScene from "./ConfirmScene.js";
-export default new Scenes.Stage([
+import IMyContext from "../interfaces/IMySceneContext.js";
+
+export default new Scenes.Stage<IMyContext>([
     UsernameScene,
     WeatherScene,
     ExchangeScene,

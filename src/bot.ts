@@ -1,16 +1,19 @@
-import { Telegraf, Markup, session } from "telegraf";
-import User from "./dist/classes/User.js";
+import { Telegraf, session } from "telegraf";
 import dotenv from "dotenv";
-import GetInfoStage from "./dist/scenes/GetInfoStage.js";
-import usersSchedule from "./dist/schedule/usersSchedules.js";
+import GetInfoStage from "./scenes/GetInfoStage.js";
+import usersSchedule from "./schedule/usersSchedules.js";
 import express from "express";
 const app = express();
 
-import db from "./dist/db/dbAPI.js";
-await db.connect("BotTELEGRAM");
+import db from "./db/dbAPI.js";
+import IMyContext from "./interfaces/IMySceneContext.js";
+import IUserConfig from "./db/dbInterfaces/IUserConfig.js";
+import Config from "./classes/Config.js";
 
 dotenv.config();
-const bot = new Telegraf(process.env.token);
+const bot = new Telegraf<IMyContext>(process.env.token!);
+db.connect("BotTELEGRAM");
+
 
 bot.use(session());
 bot.use(GetInfoStage.middleware());
@@ -35,8 +38,8 @@ bot.command("deleteNotification", (ctx) => {
 bot.command("pushNotification", async (ctx) => {
     let id = ctx.message.from.id;
     let users = await db.getCollection("Users");
-    let userConfig = users.find((user) => user.id == id);
-    if (userConfig) {
+    let userConfig: IUserConfig | undefined = users!.find((user) => user.id == id);
+    if (userConfig != undefined) {
         usersSchedule.setSchedule(userConfig, ctx);
         ctx.reply("Уведомления успешно добавлены!");
     } else {
@@ -58,13 +61,13 @@ bot.command("getConfig", async (ctx) => {
     let id = ctx.message.from.id;
     try {
         let users = await db.getCollection("Users");
-        let userConfig = users.find((user) => user.id == id);
-        if (userConfig) {
-            ctx.reply(User.getConfig(userConfig));
+        let userConfig: IUserConfig | undefined = users!.find((user) => user.id == id);
+        if (userConfig != undefined) {
+            ctx.reply(new Config(userConfig).getConfig());
         } else {
             ctx.reply("Настройки вашего профиля не найдены!");
         }
-    } catch {
+    } catch (err) {
         console.log(err);
         return ctx.reply("Неполадки с сервером, попробуйте позже!");
     }

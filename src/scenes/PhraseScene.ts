@@ -1,19 +1,29 @@
 import { Markup, Scenes } from "telegraf";
-const PhraseScene = new Scenes.BaseScene("PhraseScene");
+import IMySceneContext from "../interfaces/IMySceneContext";
+
+const PhraseScene = new Scenes.BaseScene<IMySceneContext>("PhraseScene");
+
 PhraseScene.enter((ctx) => {
-    ctx.reply("Хотите получать фразу дня?", Markup.keyboard([["Да", "Нет"]])
-        .resize()
-        .oneTime());
+    ctx.reply(
+        "Хотите получать фразу дня?",
+        Markup.keyboard([["Да", "Нет"]])
+            .resize()
+            .oneTime()
+    );
 });
+
 PhraseScene.hears("Да", (ctx) => {
     ctx.scene.state.phrase = true;
     return ctx.scene.enter("CinemaScene", ctx.scene.state);
 });
+
 PhraseScene.hears("Нет", (ctx) => {
     ctx.scene.state.phrase = false;
     return ctx.scene.enter("CinemaScene", ctx.scene.state);
 });
+
 PhraseScene.on("text", (ctx) => {
     return ctx.reply("Воспользуйтесь, пожалуйста, клавиатурой)");
 });
+
 export default PhraseScene;

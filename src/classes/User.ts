@@ -5,32 +5,44 @@ import Weather from "./Weather.js";
 import Exchanges from "./Exchanges.js";
 import Phrase from "./Phrase.js";
 import Movie from "./Movie.js";
+import IUserConfig from "../db/dbInterfaces/IUserConfig.js";
+import {ExternalAPI} from "./ExternalAPI.js";
 dotenv.config();
 class User {
-    constructor(config) {
+    config: IUserConfig;
+    externalAPIs: Array<ExternalAPI>;
+
+    constructor(config: IUserConfig) {
         this.config = config;
-        this.externalAPIs = new Array(new Weather(config), new Exchanges(config), new Phrase(config), new Movie(config));
+        this.externalAPIs = new Array<ExternalAPI>(
+            new Weather(config),
+            new Exchanges(config),
+            new Phrase(config),
+            new Movie(config)
+        );
     }
+
     async getMessage() {
         let greeting = this.getGreeting();
         let apiMessages = "";
         await Promise.all(this.externalAPIs.map(async (externalAPI) => {
             await externalAPI.getAndSaveData();
             apiMessages += externalAPI.toMessage();
-        }));
+        })
+        );
         return greeting + apiMessages;
     }
+
     getGreeting() {
-        let hour = this.config.hour;
+        let hour = this.config.hour!;
         let username = this.config.username;
-        if (hour >= 4 && hour <= 11)
-            return `Доброе утро, ${username}!\n\n`;
+        if (hour >= 4 && hour <= 11) return `Доброе утро, ${username}!\n\n`;
         if (hour >= 12 && hour <= 16)
             return `Продуктивного дня, ${username}!\n\n`;
-        if (hour >= 17 && hour <= 23)
-            return `Приятного вечера, ${username}!\n\n`;
+        if (hour >= 17 && hour <= 23) return `Приятного вечера, ${username}!\n\n`;
         return `Доброй ночи, ${username}!\n\n`;
     }
+
     getConfig() {
         return new Config(this.config).getConfig();
     }
