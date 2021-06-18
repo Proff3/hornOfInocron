@@ -2,6 +2,9 @@ import { IValutes } from "../db/dbInterfaces/IExchanges.js";
 import IUserConfig from "../db/dbInterfaces/IUserConfig.js";
 import { IWeatherCoords } from "../db/dbInterfaces/IWeather.js";
 
+/**
+ * Класс конфига пользователя
+ */
 export default class Config implements IUserConfig {
     id: Number;
     requiredExchanges: Array<keyof IValutes> | null;
@@ -23,6 +26,9 @@ export default class Config implements IUserConfig {
         this.hour = config.hour;
     }
 
+    /**
+     * Генерация конфига с сообщение
+     */
     getConfig(): string {
         let trackingExchangeMes = createMesChosenExchanges(
             this.requiredExchanges
@@ -30,9 +36,7 @@ export default class Config implements IUserConfig {
         return `Текущая конфигурация:\n
         обращение - ${this.username}\n
         погода - ${
-            this.weatherCoords != null
-                ? "отслеживается"
-                : "не отслеживается"
+            this.weatherCoords != null ? "отслеживается" : "не отслеживается"
         }\n
         валюты - ${trackingExchangeMes}\n
         фраза дня - ${this.phrase ? "отслеживается" : "не отслеживается"}\n

@@ -6,6 +6,9 @@ import IUserConfig from "../db/dbInterfaces/IUserConfig.js";
 import { ExternalAPI } from "./ExternalAPI.js";
 import fetch from "node-fetch";
 
+/**
+ * Класс кинофильма
+ */
 export default class Movie extends ExternalAPI {
     isRequired: Boolean;
     movie: IMovie;
@@ -17,9 +20,12 @@ export default class Movie extends ExternalAPI {
         this.resourse = ResourseEnum.MOVIE;
     }
 
+    /**
+     * Запрос, и дальнейшее кеширование данных о фразе
+     */
     async getAndSaveData(): Promise<void> {
-        if (!this.isRequired) return;
-        let data: IMovie;
+        if (!this.isRequired) return; //Проверка на отслеживание
+        let data: IMovie; //Переменная для работы с данными от API
         try {
             do {
                 let movieId = Math.floor(Math.random() * 7000);
@@ -28,8 +34,9 @@ export default class Movie extends ExternalAPI {
                 data = await res.json();
             } while (data.success == false);
             data.resourse = "movie";
-            db.createOrUpdate("MessageItems", "resourse", this.resourse, data);
+            db.createOrUpdate("MessageItems", "resourse", this.resourse, data); //Кеширование данных в бд
         } catch (err) {
+            //Случай при недоступности данных от API
             console.log(err);
             let messageItems = await db.getCollection("MessageItems");
             data = messageItems!.find(
@@ -38,6 +45,9 @@ export default class Movie extends ExternalAPI {
         }
         this.movie = data;
     }
+    /**
+     * Преобразование данных от API в сообщение
+     */
     toMessage(): String {
         let rusultString = "Фильм дня: ";
         let genres = this.movie!.genres.map((genre) => genre.name);

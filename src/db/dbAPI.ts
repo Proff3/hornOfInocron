@@ -14,11 +14,18 @@ const mongoClient = new MongoDB.MongoClient(
     }
 );
 
+/**
+ * Тип для отправки данных в бд, использующий интерфейсы для работы с бд
+ */
 type AnyDbInterface = (IExchanges | IMovie | IPhrase | IWeather | IUserConfig);
 
 class DataBaseAPI {
-    client: MongoClient;
-    db: Db;
+    private client: MongoClient;
+    private db: Db;
+    /**
+     * Подключение к бд
+     * @param dbTitle - название базы данных
+     */
     async connect(dbTitle: string) {
         try {
             this.client = await mongoClient.connect();
@@ -28,6 +35,10 @@ class DataBaseAPI {
         }
     }
 
+    /**
+     * Получение коллекции из бд
+     * @param collection - название коллекции
+     */
     async getCollection(collection: string) {
         let data;
         try {
@@ -38,6 +49,11 @@ class DataBaseAPI {
         return data;
     }
 
+    /**
+     * Добавление информации в бд
+     * @param collection - название коллекции
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async insert(collection: string, data: AnyDbInterface) {
         const requiredCollection = this.db.collection(collection);
         if (Array.isArray(data)) {
@@ -47,6 +63,11 @@ class DataBaseAPI {
         }
     }
 
+    /**
+     * Удаление информации из бд
+     * @param collection - название коллекции
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async deleteOne(collection: string, data: AnyDbInterface) {
         if (typeof data === "object" && data !== null) {
             const requiredCollection = this.db.collection(collection);
@@ -56,7 +77,19 @@ class DataBaseAPI {
         }
     }
 
-    async updateOne(collection: string, key: string, value: ResourseEnum | Number, data: AnyDbInterface) {
+    /**
+     * Обновление информации из бд
+     * @param collection - название коллекции
+     * @param key - идентифицирующий ключ кортежа данных
+     * @param value - значение идентифицирующего ключа кортежа данных
+     * @param data - данные, имеющие тип для работы с бд
+     */
+    async updateOne(
+        collection: string,
+        key: string,
+        value: ResourseEnum | Number,
+        data: AnyDbInterface
+    ) {
         const requiredCollection = this.db.collection(collection);
         let filter: any = {};
         filter[key] = value;
@@ -65,7 +98,19 @@ class DataBaseAPI {
         });
     }
 
-    async createOrUpdate(collection: string, key: string, value: ResourseEnum | Number, data: AnyDbInterface) {
+    /**
+     * Создание/обновление данных
+     * @param collection - название коллекции
+     * @param key - идентифицирующий ключ кортежа данных
+     * @param value - значение идентифицирующего ключа кортежа данных
+     * @param data - данные, имеющие тип для работы с бд
+     */
+    async createOrUpdate(
+        collection: string,
+        key: string,
+        value: ResourseEnum | Number,
+        data: AnyDbInterface
+    ) {
         let requiredCollection = await this.getCollection(collection);
         if (requiredCollection!.find((item) => item[key] == value)) {
             await this.updateOne(collection, key, value, data);

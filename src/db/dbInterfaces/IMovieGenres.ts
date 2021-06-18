@@ -1,4 +1,7 @@
-export default interface IMovieGenres{
+/**
+ * Интерфейс для работы с жанрами фильмов
+ */
+export default interface IMovieGenres {
     id: Number;
     name: String;
 }

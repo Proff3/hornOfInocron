@@ -1,5 +1,8 @@
 import IDbItems from "./IDbItems";
 
+/**
+ * Интерфейс для работы с данными о погоде
+ */
 export default interface IWeather extends IDbItems{
     coord: IWeatherCoords;
     weather: Array<IWeatherArray>;

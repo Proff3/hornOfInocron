@@ -1,5 +1,8 @@
+/**
+ * Интерфейс валют
+ */
 export default interface IEnumExchanges {
-    "USD": Boolean;
-    "EUR": Boolean;
-    "CNY": Boolean;
+    USD: Boolean;
+    EUR: Boolean;
+    CNY: Boolean;
 }

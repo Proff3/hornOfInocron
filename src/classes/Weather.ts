@@ -6,6 +6,9 @@ import IUserConfig from "../db/dbInterfaces/IUserConfig.js";
 import { ExternalAPI } from "./ExternalAPI.js";
 import fetch from "node-fetch";
 
+/**
+ * Класс погоды
+ */
 export default class Weather extends ExternalAPI {
     weather: IWeather;
     resourse: ResourseEnum;
@@ -17,16 +20,20 @@ export default class Weather extends ExternalAPI {
         this.resourse = ResourseEnum.WEATHER;
     }
 
+    /**
+     * Запрос, и дальнейшее кеширование данных о погоде (для каждого пользователя отдельная запись)
+     */
     async getAndSaveData(): Promise<void> {
-        if (!this.weatherCoords) return;
-        let data: IWeather;
+        if (!this.weatherCoords) return; //Проверка на отслеживание погоды
+        let data: IWeather; //Переменная для работы с данными от API
         try {
             let url = `https://api.openweathermap.org/data/2.5/weather?lat=${this.weatherCoords.lat}&lon=${this.weatherCoords.lon}&appid=${process.env.weatherAPIkey}&units=metric&lang=ru`;
             const res = await fetch(url);
             data = await res.json();
             data.resourse = this.resourse;
-            db.createOrUpdate("WeatherData", "resourse", this.resourse, data);
+            db.createOrUpdate("WeatherData", "resourse", this.resourse, data); //Кеширование данных в бд
         } catch (err) {
+            //Случай при недоступности данных от API
             console.log(err);
             let weatherData = await db.getCollection("WeatherData");
             data = weatherData!.find(
@@ -35,6 +42,9 @@ export default class Weather extends ExternalAPI {
         }
         this.weather = data;
     }
+    /**
+     * Преобразование данных от API в сообщение
+     */
     toMessage(): String {
         let rusultString = "Погода: ";
         if (!this.weatherCoords) return rusultString + `не отслеживается.\n\n`;

@@ -5,6 +5,10 @@ const mongoClient = new MongoDB.MongoClient(`mongodb+srv://pron9:${process.env.d
     useUnifiedTopology: true,
 });
 class DataBaseAPI {
+    /**
+     * Подключение к бд
+     * @param dbTitle - название базы данных
+     */
     async connect(dbTitle) {
         try {
             this.client = await mongoClient.connect();
@@ -14,6 +18,10 @@ class DataBaseAPI {
             console.log(err);
         }
     }
+    /**
+     * Получение коллекции из бд
+     * @param collection - название коллекции
+     */
     async getCollection(collection) {
         let data;
         try {
@@ -24,6 +32,11 @@ class DataBaseAPI {
         }
         return data;
     }
+    /**
+     * Добавление информации в бд
+     * @param collection - название коллекции
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async insert(collection, data) {
         const requiredCollection = this.db.collection(collection);
         if (Array.isArray(data)) {
@@ -33,6 +46,11 @@ class DataBaseAPI {
             await requiredCollection.insertOne(data);
         }
     }
+    /**
+     * Удаление информации из бд
+     * @param collection - название коллекции
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async deleteOne(collection, data) {
         if (typeof data === "object" && data !== null) {
             const requiredCollection = this.db.collection(collection);
@@ -42,6 +60,13 @@ class DataBaseAPI {
             throw new Error("Неверно введен формат данных для удаления");
         }
     }
+    /**
+     * Обновление информации из бд
+     * @param collection - название коллекции
+     * @param key - идентифицирующий ключ кортежа данных
+     * @param value - значение идентифицирующего ключа кортежа данных
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async updateOne(collection, key, value, data) {
         const requiredCollection = this.db.collection(collection);
         let filter = {};
@@ -50,6 +75,13 @@ class DataBaseAPI {
             $set: data,
         });
     }
+    /**
+     * Создание/обновление данных
+     * @param collection - название коллекции
+     * @param key - идентифицирующий ключ кортежа данных
+     * @param value - значение идентифицирующего ключа кортежа данных
+     * @param data - данные, имеющие тип для работы с бд
+     */
     async createOrUpdate(collection, key, value, data) {
         let requiredCollection = await this.getCollection(collection);
         if (requiredCollection.find((item) => item[key] == value)) {

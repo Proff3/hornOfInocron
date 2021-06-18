@@ -25,20 +25,25 @@ bot.start(async (ctx) => {
     ctx.scene.enter("UsernameScene");
 });
 
-bot.command("changeConfig", (ctx) => {
+//Команда изменения настроек пользователя
+bot.command("changeConfig", (ctx) => { 
     ctx.scene.enter("UsernameScene");
 });
 
-bot.command("deleteNotification", (ctx) => {
+//Команда удаления переодичных оповещений
+bot.command("deleteNotification", (ctx) => { 
     let id = ctx.message.from.id;
     usersSchedule.deleteNotification(id);
     ctx.reply("Уведомления удалены!");
 });
 
+//Команда для начала отправки переодичных оповещений
 bot.command("pushNotification", async (ctx) => {
     let id = ctx.message.from.id;
     let users = await db.getCollection("Users");
-    let userConfig: IUserConfig | undefined = users!.find((user) => user.id == id);
+    let userConfig: IUserConfig | undefined = users!.find(
+        (user) => user.id == id
+    );
     if (userConfig != undefined) {
         usersSchedule.setSchedule(userConfig, ctx);
         ctx.reply("Уведомления успешно добавлены!");
@@ -47,6 +52,7 @@ bot.command("pushNotification", async (ctx) => {
     }
 });
 
+//Команда проверки статуса переодичных оповещений
 bot.command("checkNotification", async (ctx) => {
     let id = ctx.message.from.id;
     if (usersSchedule.checkNotification(id)) {
@@ -56,6 +62,7 @@ bot.command("checkNotification", async (ctx) => {
     }
 });
 
+//Команда для просмотра текущих настроек пользователя из базы данных
 bot.command("getConfig", async (ctx) => {
     ctx.reply("Пожалуйста, подождите, настройки вашего профиля загружаются!");
     let id = ctx.message.from.id;
@@ -73,18 +80,21 @@ bot.command("getConfig", async (ctx) => {
     }
 });
 
+//Бот работает только с командами, при отправке текстовых сообщений отправляется набор команд в виде сообщения
 bot.on("text", (ctx) => {
     ctx.reply(messageCommands);
 });
 
 bot.launch();
 
+//Для деплоя
 app.listen(process.env.PORT || 5000);
 
 app.get("/", (req, res) => {
     res.send("Thanks for keeping me alive)");
 });
 
+//Набор команд в виде сообщения
 var messageCommands = `Команды бота:\n
     /changeConfig - изменение настроек вашего профиля\n
     /getConfig - просмотр настройки вашего профиля\n

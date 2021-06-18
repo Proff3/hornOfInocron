@@ -6,11 +6,17 @@ import Exchanges from "./Exchanges.js";
 import Phrase from "./Phrase.js";
 import Movie from "./Movie.js";
 dotenv.config();
+/**
+ * Класс пользователя
+ */
 class User {
     constructor(config) {
         this.config = config;
         this.externalAPIs = new Array(new Weather(config), new Exchanges(config), new Phrase(config), new Movie(config));
     }
+    /**
+     * Формирование уведомления пользователю
+     */
     async getMessage() {
         let greeting = this.getGreeting();
         let apiMessages = "";
@@ -20,6 +26,9 @@ class User {
         }));
         return greeting + apiMessages;
     }
+    /**
+     * Формирование приветственного сообщения пользователю
+     */
     getGreeting() {
         let hour = this.config.hour;
         let username = this.config.username;
@@ -31,6 +40,9 @@ class User {
             return `Приятного вечера, ${username}!\n\n`;
         return `Доброй ночи, ${username}!\n\n`;
     }
+    /**
+     * Получения конфига пользователя
+     */
     getConfig() {
         return new Config(this.config).getConfig();
     }

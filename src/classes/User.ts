@@ -8,9 +8,12 @@ import Movie from "./Movie.js";
 import IUserConfig from "../db/dbInterfaces/IUserConfig.js";
 import {ExternalAPI} from "./ExternalAPI.js";
 dotenv.config();
+/**
+ * Класс пользователя
+ */
 class User {
     config: IUserConfig;
-    externalAPIs: Array<ExternalAPI>;
+    externalAPIs: Array<ExternalAPI>; //Абстрактный массив для работы с экземплярами классов внешних API
 
     constructor(config: IUserConfig) {
         this.config = config;
@@ -22,27 +25,38 @@ class User {
         );
     }
 
+    /**
+     * Формирование уведомления пользователю
+     */
     async getMessage() {
         let greeting = this.getGreeting();
         let apiMessages = "";
-        await Promise.all(this.externalAPIs.map(async (externalAPI) => {
-            await externalAPI.getAndSaveData();
-            apiMessages += externalAPI.toMessage();
-        })
+        await Promise.all(
+            this.externalAPIs.map(async (externalAPI) => {
+                await externalAPI.getAndSaveData();
+                apiMessages += externalAPI.toMessage();
+            })
         );
         return greeting + apiMessages;
     }
 
+    /**
+     * Формирование приветственного сообщения пользователю
+     */
     getGreeting() {
         let hour = this.config.hour!;
         let username = this.config.username;
         if (hour >= 4 && hour <= 11) return `Доброе утро, ${username}!\n\n`;
         if (hour >= 12 && hour <= 16)
             return `Продуктивного дня, ${username}!\n\n`;
-        if (hour >= 17 && hour <= 23) return `Приятного вечера, ${username}!\n\n`;
+        if (hour >= 17 && hour <= 23)
+            return `Приятного вечера, ${username}!\n\n`;
         return `Доброй ночи, ${username}!\n\n`;
     }
 
+    /**
+     * Получения конфига пользователя
+     */
     getConfig() {
         return new Config(this.config).getConfig();
     }

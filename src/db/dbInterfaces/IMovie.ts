@@ -1,6 +1,9 @@
 import IDbItems from "./IDbItems";
 import IMovieGenres from "./IMovieGenres";
 
+/**
+ * Интерфейс для работы с фильмами
+ */
 export default interface IMovie extends IDbItems{
     adult: Boolean;
     budget: Number;
