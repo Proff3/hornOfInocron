@@ -1,3 +1,5 @@
+@hornOfUnicorn_bot - telegram bot.
+
 The bot uses Typescript for the programming language and Node.js for the backend platform. Libraries:
 * Telegraf - Telegram framework [link](https://www.npmjs.com/package/telegraf);
 * MongoDB NodeJS Driver [link](https://www.npmjs.com/package/mongodb);
